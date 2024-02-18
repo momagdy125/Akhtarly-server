@@ -17,9 +17,9 @@ exports.querySupportComparisons = (query) => {
 
   return advancedQuery;
 };
-exports.querySupportSubstring = (query) => {
-  if (query.Model) {
-    query.Model = { $regex: query.Model, $options: "i" };
+exports.querySupportSubstring = (query, fieldName) => {
+  if (query[fieldName]) {
+    query[fieldName] = { $regex: query[fieldName], $options: "i" };
   }
   return query;
 };

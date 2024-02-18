@@ -9,7 +9,7 @@ const {
 
 exports.getAllPrograms = (request, response, next) => {
   var Query = querySupportComparisons(request.query);
-  Query = querySupportSubstring(Query);
+  Query = querySupportSubstring(Query, "Software_Game");
   Query = RemovingFieldsFromQuery(Query, ["limit", "sort", "page"]);
 
   const DefaultLimit = pagination(request);

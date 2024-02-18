@@ -4,12 +4,11 @@ const cors = require("cors");
 const cpuRouter = require("./routers/cpuRouter");
 const gpuRouter = require("./routers/gpuRouter");
 const userRouter = require("./routers/userRouter");
+const programRouter = require("./routers/programRouter");
 // const favoriteRouter = require("./routers/favoriteRouter");
 const mongoose = require("mongoose");
 const globalErrorHandler = require("./middlewares/globalErrorhandler");
 const ApiError = require("./Utils/apiError");
-
-const cpuModel = require("./models/cpuModel");
 
 dotenv.config({ path: "./config.env" });
 connectToDatabase();
@@ -20,6 +19,7 @@ middlewareParsing();
 // //using routes
 app.use("/api/gpus/", gpuRouter);
 app.use("/api/cpus/", cpuRouter);
+app.use("/api/programs/", programRouter);
 app.use("/auth", userRouter);
 // app.use("/favorites", favoriteRouter);
 app.all("*", (req, res, next) => {

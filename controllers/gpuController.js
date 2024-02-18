@@ -9,7 +9,7 @@ const {
 
 exports.getAllGpus = (request, response, next) => {
   var Query = querySupportComparisons(request.query);
-  Query = querySupportSubstring(Query);
+  Query = querySupportSubstring(Query, "Model");
   Query = RemovingFieldsFromQuery(Query, ["limit", "sort", "page"]);
   const DefaultLimit = pagination(request);
 

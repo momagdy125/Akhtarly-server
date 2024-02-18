@@ -39,5 +39,5 @@ const gpuSchema = new mongoose.Schema({
   },
 });
 
-const gpuModel = mongoose.model("GPU", gpuSchema);
+const gpuModel = mongoose.model("programs", gpuSchema);
 module.exports = gpuModel;
