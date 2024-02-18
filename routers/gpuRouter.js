@@ -13,21 +13,21 @@ gpuRouter.get(
 );
 
 gpuRouter.post(
-  "/",
+  "/createGpu",
   auth.verifyToken,
   auth.isAuthorized(rule.ADMIN, rule.OWNER),
   gpuController.createGpu
 );
 
 gpuRouter.put(
-  "/:id",
+  "/editGpu/:id",
   auth.verifyToken,
   auth.isAuthorized(rule.ADMIN, rule.OWNER),
   gpuController.editGpu
 );
 
 gpuRouter.delete(
-  "/:id",
+  "/deleteGpu/:id",
   auth.verifyToken,
   auth.isAuthorized(rule.ADMIN, rule.OWNER),
   gpuController.deleteGpu

@@ -1,5 +1,8 @@
 const programModel = require("../models/programModel");
+const cpuModel = require("../models/cpuModel");
+const gpuModel = require("../models/gpuModel");
 const apiError = require("../Utils/apiError");
+
 const {
   RemovingFieldsFromQuery,
   querySupportComparisons,
@@ -65,5 +68,14 @@ exports.deleteProgram = (request, response, next) => {
     })
     .catch((error) => {
       next(new apiError(`cant't find Id ${request.params.id}`, 404));
+    });
+};
+
+exports.sendPrograms = (request, response, next) => {
+  programModel
+    .find({ _id: { $in: request.body.programList } })
+    .select("MinGPU MinCPU")
+    .then((programs) => {
+      response.send(programs);
     });
 };

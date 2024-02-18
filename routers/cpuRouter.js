@@ -13,21 +13,21 @@ cpuRouter.get(
 );
 
 cpuRouter.post(
-  "/",
+  "/addCpu",
   auth.verifyToken,
   auth.isAuthorized(rule.ADMIN, rule.OWNER),
   cpuController.createCpu
 );
 
 cpuRouter.put(
-  "/:id",
+  "/editCpu/:id",
   auth.verifyToken,
   auth.isAuthorized(rule.ADMIN, rule.OWNER),
   cpuController.editCpu
 );
 
 cpuRouter.delete(
-  "/:id",
+  "/deleteCpu/:id",
   auth.verifyToken,
   auth.isAuthorized(rule.ADMIN, rule.OWNER),
   cpuController.deleteCpu
