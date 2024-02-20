@@ -39,7 +39,11 @@ exports.createProgram = (request, response, next) => {
       response.json({ state: "success", program });
     })
     .catch((error) => {
-      next(new apiError(error.message, 400));
+      if (error.name === "ValidationError") {
+        // If it is, pass it to the next middleware (global error handler)
+        return next(error);
+      }
+      return next(new apiError(error.message, 400));
     });
 };
 

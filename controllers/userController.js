@@ -11,6 +11,10 @@ exports.signUp = (request, response, next) => {
       response.status(201).json({ message: "created", user, token });
     })
     .catch((error) => {
+      if (error.name === "ValidationError") {
+        // If it is, pass it to the next middleware (global error handler)
+        return next(error);
+      }
       return next(new apiError(error.message, 400));
     });
 };

@@ -1,20 +1,12 @@
 const globalErrorHandler = (err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
-
+  console.log(err.name);
   if (err.name === "ValidationError") {
-    // If the error is a ValidationError
-    const errorMessages = {};
-    for (let field in err.errors) {
-      errorMessages[field] = err.errors[field].message;
-    }
-    response.status(400).json({
-      message: "error",
-      details: errorMessages, // Sending all validation error messages
-    });
+    const errors = Object.values(err.errors).map((error) => error.message);
+    return res.status(400).json({ state: "Fail", errors });
   } else {
-    res.status(err.statusCode).json({
-      message: err.message,
+    // For other types of errors, send a general error response
+    return res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
       state: "Fail",
     });
   }

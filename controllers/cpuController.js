@@ -38,7 +38,10 @@ exports.createCpu = (request, response, next) => {
       response.json({ state: "success", cpu });
     })
     .catch((error) => {
-      next(new apiError(error.message, 400));
+      if (error.name === "ValidationError") {
+        return next(error);
+      }
+      return next(new apiError(error.message, 400));
     });
 };
 

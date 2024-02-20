@@ -36,7 +36,11 @@ exports.createGpu = (request, response, next) => {
       response.json({ state: "success", Gpu });
     })
     .catch((error) => {
-      next(new apiError(error.message, 400));
+      if (error.name === "ValidationError") {
+        // If it is, pass it to the next middleware (global error handler)
+        return next(error);
+      }
+      return next(new apiError(error.message, 400));
     });
 };
 
