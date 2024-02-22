@@ -4,6 +4,10 @@ const gpuSchema = new mongoose.Schema({
   Type: {
     type: String,
     default: "GPU",
+    enum: {
+      values: ["GPU"],
+      message: `Invalid type!,Type should be GPU`,
+    },
   },
   PartNumber: {
     required: false,

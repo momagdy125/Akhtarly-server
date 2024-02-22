@@ -4,6 +4,10 @@ const cpuSchema = new mongoose.Schema({
   Type: {
     type: String,
     default: "CPU",
+    enum: {
+      values: ["CPU"],
+      message: `Invalid type!,Type should be CPU`,
+    },
   },
   PartNumber: {
     required: false,

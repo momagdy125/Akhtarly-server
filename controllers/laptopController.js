@@ -1,4 +1,4 @@
-const cpuModel = require("../models/cpuModel");
+const laptopModel = require("../models/laptopModel");
 const apiError = require("../Utils/apiError");
 const {
   RemovingFieldsFromQuery,
@@ -7,35 +7,36 @@ const {
   pagination,
 } = require("../Utils/queryProcesses");
 
-exports.getAllCpus = (request, response, next) => {
+exports.getAllLaptops = (request, response, next) => {
   var Query = querySupportComparisons(request.query);
-  Query = querySupportSubstring(Query, "Model");
+  Query = querySupportSubstring(Query, "Product ");
   Query = RemovingFieldsFromQuery(Query, ["limit", "sort", "page"]);
   console.log(Query);
 
   const DefaultLimit = pagination(request);
 
-  cpuModel
+  laptopModel
     .find(Query, { __v: false })
+    .select("-laptop_ID") // remove laptop_ID field
     .sort(request.query.sort)
     .limit(request.query.limit)
     .skip((request.query.page - 1) * DefaultLimit)
-    .then((Cpus) => {
+    .then((Laptops) => {
       response.json({
         state: "success",
-        length: Gpus.length,
-        result: Cpus,
+        length: Laptops.length,
+        result: Laptops,
       });
     })
     .catch((error) => {
       next(new apiError(error.message, 404));
     });
 };
-exports.createCpu = (request, response, next) => {
-  cpuModel
+exports.addLaptop = (request, response, next) => {
+  laptopModel
     .create(request.body)
-    .then((cpu) => {
-      response.json({ state: "success", cpu });
+    .then((laptop) => {
+      response.json({ state: "success", laptop });
     })
     .catch((error) => {
       if (error.name === "ValidationError") {
@@ -45,27 +46,27 @@ exports.createCpu = (request, response, next) => {
     });
 };
 
-exports.editCpu = (request, response, next) => {
-  cpuModel
+exports.editLaptop = (request, response, next) => {
+  laptopModel
     .findByIdAndUpdate(request.params.id, request.body, {
       runValidators: true,
       new: true,
     })
-    .then((updatedCpu) => {
+    .then((updatedLaptop) => {
       response.status(201).json({
         state: "success",
-        updatedCpu,
+        updatedLaptop,
       });
     })
     .catch((error) => {
       next(new apiError(`cant't find Id ${request.params.id}`, 404));
     });
 };
-exports.deleteCpu = (request, response, next) => {
-  cpuModel
+exports.deleteLaptop = (request, response, next) => {
+  laptopModel
     .findByIdAndDelete(request.params.id, { new: true })
-    .then((cpu) => {
-      response.status(200).json({ state: "success", DeletedCpu: cpu });
+    .then((laptop) => {
+      response.status(200).json({ state: "success", DeletedLaptop: laptop });
     })
     .catch((error) => {
       next(new apiError(`cant't find Id ${request.params.id}`, 404));

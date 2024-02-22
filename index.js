@@ -3,8 +3,9 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const cpuRouter = require("./routers/cpuRouter");
 const gpuRouter = require("./routers/gpuRouter");
-const userRouter = require("./routers/userRouter");
 const programRouter = require("./routers/programRouter");
+const laptopRouter = require("./routers/laptopRouter");
+const userRouter = require("./routers/userRouter");
 // const favoriteRouter = require("./routers/favoriteRouter");
 const mongoose = require("mongoose");
 const globalErrorHandler = require("./middlewares/globalErrorhandler");
@@ -20,6 +21,7 @@ middlewareParsing();
 app.use("/api/gpus/", gpuRouter);
 app.use("/api/cpus/", cpuRouter);
 app.use("/api/programs/", programRouter);
+app.use("/api/laptops/", laptopRouter);
 app.use("/auth", userRouter);
 // app.use("/favorites", favoriteRouter);
 app.all("*", (req, res, next) => {
