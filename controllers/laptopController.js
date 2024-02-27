@@ -9,15 +9,14 @@ const {
 
 exports.getAllLaptops = (request, response, next) => {
   var Query = querySupportComparisons(request.query);
-  Query = querySupportSubstring(Query, "Product ");
+  Query = querySupportSubstring(Query, "Product", "Cpu", "Gpu");
   Query = RemovingFieldsFromQuery(Query, ["limit", "sort", "page"]);
   console.log(Query);
-
   const DefaultLimit = pagination(request);
 
   laptopModel
     .find(Query, { __v: false })
-    .select("-laptop_ID") // remove laptop_ID field
+    .select("-laptop_ID") //remove laptop_ID
     .sort(request.query.sort)
     .limit(request.query.limit)
     .skip((request.query.page - 1) * DefaultLimit)

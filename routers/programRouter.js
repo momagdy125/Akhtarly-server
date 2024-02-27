@@ -21,7 +21,7 @@ programRouter.post(
   "/sendPrograms",
   auth.verifyToken,
   listOfObjectIdValidation,
-  programController.sendPrograms
+  programController.sendProgramsAndGetLaps
 );
 
 programRouter.put(

@@ -23,7 +23,7 @@ exports.getAllCpus = (request, response, next) => {
     .then((Cpus) => {
       response.json({
         state: "success",
-        length: Gpus.length,
+        length: Cpus.length,
         result: Cpus,
       });
     })

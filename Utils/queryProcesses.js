@@ -17,10 +17,13 @@ exports.querySupportComparisons = (query) => {
 
   return advancedQuery;
 };
-exports.querySupportSubstring = (query, fieldName) => {
-  if (query[fieldName]) {
-    query[fieldName] = { $regex: query[fieldName], $options: "i" };
+exports.querySupportSubstring = (query, ...fieldsName) => {
+  for (const field of fieldsName) {
+    if (query[field]) {
+      query[field] = { $regex: query[field], $options: "i" };
+    }
   }
+
   return query;
 };
 exports.pagination = (request) => {

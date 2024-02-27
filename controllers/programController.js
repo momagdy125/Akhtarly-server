@@ -1,4 +1,5 @@
 const programModel = require("../models/programModel");
+const laptopModel = require("../models/laptopModel");
 const cpuModel = require("../models/cpuModel");
 const gpuModel = require("../models/gpuModel");
 const apiError = require("../Utils/apiError");
@@ -74,27 +75,29 @@ exports.deleteProgram = (request, response, next) => {
     });
 };
 
-exports.sendPrograms = async (request, response, next) => {
+exports.sendProgramsAndGetLaps = async (request, response, next) => {
   try {
     const programList = request.body.programList;
 
-    // Search for programs and extract CPU Model names
+    // Search for programs and extract CPU and GPU Model names
     const programs = await programModel
       .find({ _id: { $in: programList } })
-      .select("MinCPU MinGPU");
+      .select("MinCPU MaxCPU MinGPU MaxGPU");
 
     const minCPUArray = programs.map((program) => program.MinCPU);
+
     const minGPUArray = programs.map((program) => program.MinGPU);
 
     // Search for CPU document using the Model field based on minCPUArray
-    const cpu = (
+    const bestMinCpu = (
       await cpuModel
         .find({
           Model: { $in: minCPUArray },
         })
         .limit(1)
     )[0];
-    const gpu = (
+
+    const bestMinGpu = (
       await gpuModel
         .find({
           Model: { $in: minGPUArray },
@@ -104,8 +107,8 @@ exports.sendPrograms = async (request, response, next) => {
 
     response.json({
       result: {
-        cpu,
-        gpu,
+        bestMinCpu,
+        bestMinGpu,
       },
     });
   } catch (error) {
