@@ -38,6 +38,8 @@ exports.validateOTPAndEmail = async (req, res, next) => {
   const user = await userModel.findOne({
     email: req.body.email,
   });
+  if (!user.hashedCode)
+    return next(new apiError("please request code first", 400));
 
   if (user.passwordResetCodeExpires < Date.now())
     return next(new apiError("the code has expired", 400));
