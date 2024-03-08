@@ -1,6 +1,6 @@
 const userModel = require("../models/userModel");
 const apiError = require("../Utils/apiError");
-const jwt = require("jsonWebToken");
+const jwt = require("jsonwebtoken");
 const { rule } = require("../Utils/rules.js");
 const sendEmail = require("../Utils/mail");
 
