@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonweb  token");
 const apiError = require("../Utils/apiError");
 const userModel = require("../models/userModel");
 exports.verifyToken = (req, res, next) => {
