@@ -1,7 +1,8 @@
 const userModel = require("../models/userModel");
 const apiError = require("../Utils/apiError");
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonWebToken");
 const { rule } = require("../Utils/rules.js");
+const sendEmail = require("../Utils/mail");
 
 exports.signUp = (request, response, next) => {
   userModel
@@ -38,6 +39,59 @@ exports.login = async (req, res, next) => {
     return next(new apiError("please enter all fields", 400));
   }
 };
+
+exports.forgotPassword_sendCode = async (req, res, next) => {
+  try {
+    if (!req.body.email) return next(new apiError("provide an email ", 400));
+
+    const user = await userModel.findOne({ email: req.body.email });
+
+    if (!user) return next(new apiError("email not found ", 404));
+
+    const resetCode = await user.createResetPassword();
+
+    await sendEmail({
+      email: user.email,
+      subject: "reset password code",
+      text: `your reset code for your password is ${resetCode},will be expired in 10 minutes !!`,
+    });
+
+    await user.save({ validateBeforeSave: false });
+    res.json({
+      state: "Success",
+      message: `Reset password code sent to your email ${req.body.email},"will be expired in 10 minutes !!" note :check your spam if you didn't found the message in your inbox `,
+    });
+  } catch (error) {
+    return next(new apiError("too many requests please try again later ", 500));
+  }
+};
+exports.forgotPassword_submitCode = async (req, res, next) => {
+  res.send({
+    state: "code is correct",
+    message:
+      "now make patch request with the code and , email and the the new password ",
+  });
+};
+exports.forgotPassword_change = async (req, res, next) => {
+  try {
+    if (!req.body.password)
+      return next(new apiError("please provide the new password", 400));
+    const user = res.locals.user;
+
+    user.password = req.body.password;
+    user.hashedCode = undefined;
+    user.passwordResetCodeExpires = undefined;
+
+    await user.save();
+    res.status(200).send({
+      state: "success",
+      message: "password changed successfully ",
+    });
+  } catch (error) {
+    return next(new apiError(error.message, 500));
+  }
+};
+
 exports.changeRule = (req, res, next) => {
   if (req.body.rule) {
     if (![rule.ADMIN, rule.USER].includes(req.body.rule)) {

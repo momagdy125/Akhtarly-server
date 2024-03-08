@@ -9,9 +9,8 @@ const {
 
 exports.getAllCpus = (request, response, next) => {
   var Query = querySupportComparisons(request.query);
-  Query = querySupportSubstring(Query, "Model");
+  Query = querySupportSubstring(Query, "cpu");
   Query = RemovingFieldsFromQuery(Query, ["limit", "sort", "page"]);
-  console.log(Query);
 
   const DefaultLimit = pagination(request);
 

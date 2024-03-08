@@ -11,7 +11,6 @@ exports.getAllLaptops = (request, response, next) => {
   var Query = querySupportComparisons(request.query);
   Query = querySupportSubstring(Query, "Product", "Cpu", "Gpu");
   Query = RemovingFieldsFromQuery(Query, ["limit", "sort", "page"]);
-  console.log(Query);
   const DefaultLimit = pagination(request);
 
   laptopModel

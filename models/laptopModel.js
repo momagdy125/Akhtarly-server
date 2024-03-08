@@ -1,52 +1,76 @@
 const mongoose = require("mongoose");
 
 const laptopSchema = new mongoose.Schema({
-  Company: {
+  brand: {
     type: String,
-    required: [true, "Company field is required"],
+    required: true,
   },
-  TypeName: {
+  name: {
     type: String,
-    required: [true, "TypeName field is required"],
+    required: true,
   },
-  Product: {
-    type: String,
-    required: [true, "Product field is required"],
-  },
-  Inches: {
+  price: {
+    required: true,
     type: Number,
-    required: [true, "Inches field is required"],
   },
-  ScreenResolution: {
+  spec_rating: {
+    required: true,
+    type: Number,
+  },
+  processor: {
     type: String,
-    required: [true, "ScreenResolution field is required"],
+    required: true,
+  },
+  CPU: {
+    type: String,
+    required: true,
   },
   Ram: {
     type: String,
-    required: [true, "Ram field is required"],
+    required: true,
   },
-  Cpu: {
+  Ram_type: {
     type: String,
-    required: [true, "Cpu field is required"],
+    required: true,
   },
-  Gpu: {
+  ROM: {
     type: String,
-    required: [true, "Gpu field is required"],
+    required: true,
   },
-  OpSys: {
+  ROM_type: {
     type: String,
-    required: [true, "OpSys field is required"],
+    required: true,
   },
-  Memory: {
+  GPU: {
     type: String,
-    required: [true, "Memory field is required"],
+    required: true,
   },
-  Weight: {
+  display_size: {
+    required: true,
+    type: Number,
+  },
+  resolution_width: {
+    required: true,
+    type: Number,
+  },
+  resolution_height: {
+    required: true,
+    type: Number,
+  },
+  OS: {
     type: String,
-    required: [true, "Weight field is required"],
+    required: true,
   },
-  Price_in_euros: {
-    required: false,
+  warranty: {
+    required: true,
+    type: Number,
+  },
+  RankOfCPU: {
+    required: true,
+    type: Number,
+  },
+  RankOfGPU: {
+    required: true,
     type: Number,
   },
 });

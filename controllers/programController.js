@@ -85,14 +85,23 @@ exports.sendProgramsAndGetLaps = async (request, response, next) => {
       .select("MinCPU MaxCPU MinGPU MaxGPU");
 
     const minCPUArray = programs.map((program) => program.MinCPU);
+    const maxCPUArray = programs.map((program) => program.MaxCPU);
 
     const minGPUArray = programs.map((program) => program.MinGPU);
+    const maxGPUArray = programs.map((program) => program.MaxGPU);
 
     // Search for CPU document using the Model field based on minCPUArray
     const bestMinCpu = (
       await cpuModel
         .find({
           Model: { $in: minCPUArray },
+        })
+        .limit(1)
+    )[0];
+    const bestMaxCpu = (
+      await cpuModel
+        .find({
+          Model: { $in: maxCPUArray },
         })
         .limit(1)
     )[0];
@@ -104,11 +113,20 @@ exports.sendProgramsAndGetLaps = async (request, response, next) => {
         })
         .limit(1)
     )[0];
+    const bestMaxGpu = (
+      await gpuModel
+        .find({
+          Model: { $in: maxGPUArray },
+        })
+        .limit(1)
+    )[0];
 
     response.json({
       result: {
         bestMinCpu,
+        bestMaxCpu,
         bestMinGpu,
+        bestMaxGpu,
       },
     });
   } catch (error) {
