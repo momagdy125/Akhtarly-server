@@ -29,8 +29,12 @@ const userSchema = new mongoose.Schema({
     },
     required: true,
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
   hashedCode: String, // Added for password reset
-  passwordResetCodeExpires: Date,
+  codeExpired: Date,
 
   // favoriteList: {
   //   type: [mongoose.Types.ObjectId, "invalid Movie Id"],
@@ -46,16 +50,16 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (inputPass, dbPassword) {
   return await bcrypt.compare(inputPass, dbPassword);
 };
-userSchema.methods.createResetPassword = async function () {
-  const resetCode = generateCode();
+userSchema.methods.createOTP = async function () {
+  const OTP = generateCode();
 
-  this.hashedCode = await bcrypt.hash(resetCode, 12);
+  this.hashedCode = await bcrypt.hash(OTP, 12);
 
-  this.passwordResetCodeExpires = Date.now() + 10 * 60 * 1000; // expire after 10 minutes
+  this.codeExpired = Date.now() + 10 * 60 * 1000; // expire after 10 minutes
 
-  return resetCode;
+  return OTP;
 };
-userSchema.methods.compareResetCode = async function (inputCode, DBcode) {
+userSchema.methods.compareOTPs = async function (inputCode, DBcode) {
   return await bcrypt.compare(inputCode, DBcode);
 };
 const userModel = mongoose.model("User", userSchema);

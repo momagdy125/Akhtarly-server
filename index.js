@@ -1,13 +1,14 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const mongoose = require("mongoose");
+
 const cpuRouter = require("./routers/cpuRouter");
 const gpuRouter = require("./routers/gpuRouter");
 const programRouter = require("./routers/programRouter");
 const laptopRouter = require("./routers/laptopRouter");
 const userRouter = require("./routers/userRouter");
-// const favoriteRouter = require("./routers/favoriteRouter");
-const mongoose = require("mongoose");
+
 const globalErrorHandler = require("./middlewares/globalErrorhandler");
 const ApiError = require("./Utils/apiError");
 
@@ -23,10 +24,10 @@ app.use("/api/cpus/", cpuRouter);
 app.use("/api/programs/", programRouter);
 app.use("/api/laptops/", laptopRouter);
 app.use("/auth", userRouter);
-// app.use("/favorites", favoriteRouter);
 app.all("*", (req, res, next) => {
   return next(new ApiError(`can't find ${req.url}`, 404));
 });
+
 app.use(globalErrorHandler);
 function middlewareParsing() {
   app.use(cors());
