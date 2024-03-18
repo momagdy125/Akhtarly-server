@@ -15,7 +15,7 @@ const ApiError = require("./Utils/apiError");
 dotenv.config({ path: "./config.env" });
 connectToDatabase();
 const app = express();
-Listen();
+const server = Listen();
 middlewareParsing();
 
 // //using routes
@@ -24,6 +24,7 @@ app.use("/api/cpus/", cpuRouter);
 app.use("/api/programs/", programRouter);
 app.use("/api/laptops/", laptopRouter);
 app.use("/auth", userRouter);
+
 app.all("*", (req, res, next) => {
   return next(new ApiError(`can't find ${req.url}`, 404));
 });
@@ -37,7 +38,7 @@ function middlewareParsing() {
 function Listen() {
   var port = process.env.port || 8000;
 
-  app.listen(port, () => {
+  return app.listen(port, () => {
     console.log(`listening at ${port}`);
   });
 }
@@ -49,3 +50,16 @@ function connectToDatabase() {
       console.log("error has been occurred");
     });
 }
+
+process.on("unhandledRejection", (error) => {
+  console.log(error.name);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+process.on("uncaughtException", (error) => {
+  console.log(error);
+  server.close(() => {
+    process.exit(1);
+  });
+});

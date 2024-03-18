@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const { rule } = require("../Utils/rules.js");
 const generateCode = require("../Utils/generateCode.js");
+const sendVC = require("../Utils/mail/sendVC");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -27,13 +28,14 @@ const userSchema = new mongoose.Schema({
     enum: {
       values: [rule.ADMIN, rule.USER, rule.OWNER],
     },
-    required: true,
   },
   verified: {
     type: Boolean,
     default: false,
   },
-  hashedCode: String, // Added for password reset
+  changePassAt: { type: Date, default: undefined },
+  TokenCreatedAt: { type: Number, default: undefined },
+  hashedCode: String,
   codeExpired: Date,
 
   // favoriteList: {
@@ -43,8 +45,17 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 12);
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 12);
+    this.changePassAt = Math.floor(Date.now() / 1000);
+  }
+  if (this.isNew) {
+    this.rule = rule.USER;
+    this.verified = false;
+    const OTP = await this.createOTP();
+    await sendVC(this.email, OTP);
+  }
+
   next();
 });
 userSchema.methods.comparePassword = async function (inputPass, dbPassword) {

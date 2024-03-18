@@ -1,40 +1,32 @@
 const cpuModel = require("../models/cpuModel");
 const apiError = require("../Utils/apiError");
-const {
-  RemovingFieldsFromQuery,
-  querySupportComparisons,
-  querySupportSubstring,
-  pagination,
-} = require("../Utils/queryProcesses");
+const { basicQueryProcess } = require("../Utils/queryProcesses");
 
-exports.getAllCpus = (request, response, next) => {
-  var Query = querySupportComparisons(request.query);
-  Query = querySupportSubstring(Query, "cpu");
-  Query = RemovingFieldsFromQuery(Query, ["limit", "sort", "page"]);
+exports.getAllCpus = async (req, res, next) => {
+  try {
+    var { Query, DefaultLimit, fields } = basicQueryProcess(req);
 
-  const DefaultLimit = pagination(request);
+    const cpus = cpuModel
+      .find(Query)
+      .sort(req.query.sort)
+      .limit(req.query.limit)
+      .skip((req.query.page - 1) * DefaultLimit)
+      .select(fields);
 
-  cpuModel
-    .find(Query, { __v: false })
-    .sort(request.query.sort)
-    .limit(request.query.limit)
-    .skip((request.query.page - 1) * DefaultLimit)
-    .then((Cpus) => {
-      response.json({
-        state: "success",
-        length: Cpus.length,
-        result: Cpus,
-      });
-    })
-    .catch((error) => {
-      next(new apiError(error.message, 404));
+    res.json({
+      state: "success",
+      length: cpus.length,
+      result: cpus,
     });
+  } catch (error) {
+    next(new apiError(error.message, 404));
+  }
 };
-exports.createCpu = (request, response, next) => {
+exports.createCpu = (req, res, next) => {
   cpuModel
-    .create(request.body)
+    .create(req.body)
     .then((cpu) => {
-      response.json({ state: "success", cpu });
+      res.json({ state: "success", cpu });
     })
     .catch((error) => {
       if (error.name === "ValidationError") {
@@ -44,29 +36,29 @@ exports.createCpu = (request, response, next) => {
     });
 };
 
-exports.editCpu = (request, response, next) => {
+exports.editCpu = (req, res, next) => {
   cpuModel
-    .findByIdAndUpdate(request.params.id, request.body, {
+    .findByIdAndUpdate(req.params.id, req.body, {
       runValidators: true,
       new: true,
     })
     .then((updatedCpu) => {
-      response.status(201).json({
+      res.status(201).json({
         state: "success",
         updatedCpu,
       });
     })
     .catch((error) => {
-      next(new apiError(`cant't find Id ${request.params.id}`, 404));
+      next(new apiError(`cant't find Id ${req.params.id}`, 404));
     });
 };
-exports.deleteCpu = (request, response, next) => {
+exports.deleteCpu = (req, res, next) => {
   cpuModel
-    .findByIdAndDelete(request.params.id, { new: true })
+    .findByIdAndDelete(req.params.id, { new: true })
     .then((cpu) => {
-      response.status(200).json({ state: "success", DeletedCpu: cpu });
+      res.status(200).json({ state: "success", DeletedCpu: cpu });
     })
     .catch((error) => {
-      next(new apiError(`cant't find Id ${request.params.id}`, 404));
+      next(new apiError(`cant't find Id ${req.params.id}`, 404));
     });
 };

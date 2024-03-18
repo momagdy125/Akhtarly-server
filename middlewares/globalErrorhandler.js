@@ -1,14 +1,23 @@
 const globalErrorHandler = (err, req, res, next) => {
-  //if the error from schema
+  return handleProdError(err, res);
+};
+function handleValidatorErrors(err, res) {
+  const errors = Object.values(err.errors).map((error) => error.message);
+  res.status(400).json({ state: "Fail", message: errors });
+}
+function handleEmailError(res) {
+  res
+    .status(403)
+    .json({ state: "Fail", message: "this email is already in use" });
+}
+function handleProdError(err, res) {
   if (err.name === "ValidationError") {
-    const errors = Object.values(err.errors).map((error) => error.message);
-    return res.status(400).json({ state: "Fail", errors });
+    //if the error from schema
+    return handleValidatorErrors(err, res);
   }
   //if the error from email duplication
-  else if (err.code === 11000 && err.keyPattern && err.keyPattern.email)
-    return res  
-      .status(403)
-      .json({ state: "Fail", message: "this email is already in use" });
+  if (err.code === 11000 && err.keyPattern && err.keyPattern.email)
+    return handleEmailError(res);
   // For other types of errors, send a general error response
   else {
     return res.status(err.statusCode || 500).json({
@@ -16,5 +25,6 @@ const globalErrorHandler = (err, req, res, next) => {
       state: "Fail",
     });
   }
-};
+}
+
 module.exports = globalErrorHandler;

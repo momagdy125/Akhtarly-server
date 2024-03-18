@@ -2,20 +2,29 @@ const jwt = require("jsonwebtoken");
 const apiError = require("../Utils/apiError");
 const userModel = require("../models/userModel");
 
-exports.verifyToken = (req, res, next) => {
+exports.verifyToken = async (req, res, next) => {
   try {
     if (!(req.headers["Authorization"] || req.headers["authorization"])) {
       return next(new apiError("please provide the token", 400));
     }
-    const authHeader =
-      req.headers["authorization"] || req.headers["Authorization"];
-    const token = authHeader.split(" ")[1];
+    const token = getTokenFromHeaders(req);
 
     const payload = jwt.verify(token, process.env.secret_str);
-    delete payload.iat;
-    delete payload.exp;
 
-    req.userData = payload;
+    const user = await userModel.findById(payload.id);
+
+    if (user.TokenCreatedAt != payload.iat)
+      return next(new apiError("this token is old one", 401));
+
+    if (user.changePassAt > payload.iat)
+      return next(
+        new apiError(
+          "this token is no longer valid because password has been changed",
+          401
+        )
+      );
+
+    req.userData = user;
 
     next();
   } catch (e) {
@@ -68,3 +77,9 @@ exports.isVerified = async (req, res, next) => {
 
   next();
 };
+function getTokenFromHeaders(req) {
+  const authHeader =
+    req.headers["authorization"] || req.headers["Authorization"];
+  const token = authHeader.split(" ")[1];
+  return token;
+}
