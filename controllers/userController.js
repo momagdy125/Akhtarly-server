@@ -3,7 +3,7 @@ const apiError = require("../Utils/apiError");
 const jwt = require("jsonwebtoken");
 const { rule } = require("../Utils/rules.js");
 const sendEmail = require("../Utils/mail/mail");
-const sendVC = require("../Utils/mail/sendVC.js");
+const sendVC = require("../Utils/mail/send_vc");
 
 exports.signUp = async (req, res, next) => {
   try {
