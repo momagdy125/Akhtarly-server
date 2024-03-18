@@ -3,7 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const { rule } = require("../Utils/rules.js");
 const generateCode = require("../Utils/generateCode.js");
-const sendVC = require("../Utils/mail/sendVC");
+const sendVC = require("../Utils/mail/sendVC.js");
 
 const userSchema = new mongoose.Schema({
   name: {
