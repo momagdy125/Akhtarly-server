@@ -42,6 +42,8 @@ exports.isAuthorized = (...rules) => {
 };
 
 exports.validateOTP = async (req, res, next) => {
+  if (!req.body.code) return next(new apiError("please provide the code", 400));
+
   const user = res.locals.user;
 
   if (!user.hashedCode)

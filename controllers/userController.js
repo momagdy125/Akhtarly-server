@@ -26,6 +26,7 @@ exports.signUp = async (req, res, next) => {
     return next(error);
   }
 };
+
 exports.sendVerificationCode = async (req, res, next) => {
   const user = res.locals.user;
 
@@ -41,6 +42,7 @@ exports.sendVerificationCode = async (req, res, next) => {
       "we sent a verification code to your email note: check your spam if you didn't find the message in your inbox",
   });
 };
+
 exports.verifyAccount = async (req, res, next) => {
   const user = res.locals.user;
 
@@ -49,7 +51,7 @@ exports.verifyAccount = async (req, res, next) => {
   user.codeExpired = undefined;
   const token = createToken(user);
 
-  user.TokenCreatedAt = Math.floor(Date.now() / 1000);
+  user.TokenCreatedAt = jwt.decode(token).iat;
   await user.save();
   res.send({
     state: "email verified successfully",
@@ -58,8 +60,7 @@ exports.verifyAccount = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
 
   if (!email || !password)
     return next(new apiError("please enter all fields", 400));
@@ -77,7 +78,7 @@ exports.login = async (req, res, next) => {
 
   const token = createToken(user);
 
-  user.TokenCreatedAt = Math.floor(Date.now() / 1000);
+  user.TokenCreatedAt = jwt.decode(token).iat;
 
   await user.save();
   res.status(200).send({ state: "success", token });
@@ -168,6 +169,7 @@ function createToken(user) {
       id: user._id,
     },
     process.env.secret_str,
+
     {
       expiresIn: process.env.expireIn,
     }

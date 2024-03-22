@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 12);
+    this.password = bcrypt.hash(this.password, 12);
     this.changePassAt = Math.floor(Date.now() / 1000);
   }
   if (this.isNew) {
@@ -58,9 +58,11 @@ userSchema.pre("save", async function (next) {
 
   next();
 });
+
 userSchema.methods.comparePassword = async function (inputPass, dbPassword) {
   return await bcrypt.compare(inputPass, dbPassword);
 };
+
 userSchema.methods.createOTP = async function () {
   const OTP = generateCode();
 
@@ -70,6 +72,7 @@ userSchema.methods.createOTP = async function () {
 
   return OTP;
 };
+
 userSchema.methods.compareOTPs = async function (inputCode, DBcode) {
   return await bcrypt.compare(inputCode, DBcode);
 };
