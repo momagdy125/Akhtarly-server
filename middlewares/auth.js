@@ -59,6 +59,7 @@ exports.validateOTP = async (req, res, next) => {
   res.locals.user = user;
   next();
 };
+
 exports.validateEmail = async (req, res, next) => {
   if (!req.body.email)
     return next(new apiError("please provide an email ", 400));

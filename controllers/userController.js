@@ -138,6 +138,8 @@ exports.forgotPassword_change = async (req, res, next) => {
   }
 };
 
+//update password
+
 exports.changeRule = (req, res, next) => {
   if (!req.body.rule) return next(new apiError("Please provide rule", 400));
 
