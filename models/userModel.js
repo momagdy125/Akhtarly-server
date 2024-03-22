@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
-    select: false, // don't show this in the response
   },
   rule: {
     type: String,

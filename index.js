@@ -52,7 +52,7 @@ function connectToDatabase() {
 }
 
 process.on("unhandledRejection", (error) => {
-  console.log(error.name);
+  console.log(error);
   server.close(() => {
     process.exit(1);
   });

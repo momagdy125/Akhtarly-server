@@ -118,7 +118,7 @@ exports.forgotPassword_submitCode = async (req, res, next) => {
   });
 };
 
-exports.forgotPassword_change = async (req, res, next) => {
+exports.changePassword = async (req, res, next) => {
   try {
     if (!req.body.password)
       return next(new apiError("please provide the new password", 400));
@@ -137,8 +137,6 @@ exports.forgotPassword_change = async (req, res, next) => {
     return next(new apiError(error.message, 500));
   }
 };
-
-//update password
 
 exports.changeRule = (req, res, next) => {
   if (!req.body.rule) return next(new apiError("Please provide rule", 400));

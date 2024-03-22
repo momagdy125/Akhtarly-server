@@ -42,7 +42,15 @@ userRouter.patch(
   "/forgotPassword-change",
   auth.validateEmail,
   auth.validateOTP,
-  userController.forgotPassword_change
+  userController.changePassword
+);
+
+//change password if needed
+userRouter.patch(
+  "/change-password",
+  auth.verifyToken,
+  auth.verifyPassword,
+  userController.changePassword
 );
 
 //get profile

@@ -80,6 +80,17 @@ exports.isVerified = async (req, res, next) => {
 
   next();
 };
+
+exports.verifyPassword = async (req, res, next) => {
+  const user = req.userData;
+  res.locals.user = user;
+  const isMatch = await user.comparePassword(req.body.old, user.password);
+
+  if (!isMatch) return next(new apiError("wrong password", 401));
+
+  next();
+};
+
 function getTokenFromHeaders(req) {
   const authHeader =
     req.headers["authorization"] || req.headers["Authorization"];
