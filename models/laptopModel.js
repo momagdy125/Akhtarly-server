@@ -65,13 +65,9 @@ const laptopSchema = new mongoose.Schema({
     required: true,
     type: Number,
   },
-  RankOfCPU: {
+  type: {
     required: true,
-    type: Number,
-  },
-  RankOfGPU: {
-    required: true,
-    type: Number,
+    type: String,
   },
 });
 

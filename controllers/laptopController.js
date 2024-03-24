@@ -15,7 +15,6 @@ exports.getAllLaptops = (request, response, next) => {
 
   laptopModel
     .find(Query, { __v: false })
-    .select("-laptop_ID") //remove laptop_ID
     .sort(request.query.sort)
     .limit(request.query.limit)
     .skip((request.query.page - 1) * DefaultLimit)
